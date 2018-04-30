@@ -27,58 +27,66 @@ Distributed as-is; no warranty is given.
 #ifndef SparkFunSX1509_H
 #define SparkFunSX1509_H
 
-#define RECEIVE_TIMEOUT_VALUE 1000	// Timeout for I2C receive
+#define RECEIVE_TIMEOUT_VALUE 1000    // Timeout for I2C receive
 
 // These are used for setting LED driver to linear or log mode:
-#define LINEAR		0	
-#define LOGARITHMIC	1
+#define LINEAR        0
+#define LOGARITHMIC    1
 
 // These are used for clock config:
-#define INTERNAL_CLOCK_2MHZ	2
-#define EXTERNAL_CLOCK	1
+#define INTERNAL_CLOCK_2MHZ    2
+#define EXTERNAL_CLOCK    1
 
 #define SOFTWARE_RESET 0
 #define HARDWARE_RESET 1
 
 #define ANALOG_OUTPUT 0x3 // To set a pin mode for PWM output
-	
-class SX1509
-{
-private:	// These private functions are not available to Arduino sketches.
-			// If you need to read or write directly to registers, consider
-			// putting the writeByte, readByte functions in the public section
-	byte deviceAddress; // I2C Address of SX1509
+
+class SX1509 {
+private:    // These private functions are not available to Arduino sketches.
+    // If you need to read or write directly to registers, consider
+    // putting the writeByte, readByte functions in the public section
+    byte deviceAddress; // I2C Address of SX1509
 // Pin definitions:
-	byte pinInterrupt;
-	byte pinOscillator;
-	byte pinReset;
+    byte pinInterrupt;
+    byte pinOscillator;
+    byte pinReset;
 // Misc variables:
-	unsigned long _clkX;
+    unsigned long _clkX;
+
 // Read Functions:
-	byte readByte(byte registerAddress);
-	unsigned int readWord(byte registerAddress);
-	void readBytes(byte firstRegisterAddress, byte * destination, byte length);
+    byte readByte(byte registerAddress);
+
+    unsigned int readWord(byte registerAddress);
+
+    void readBytes(byte firstRegisterAddress, byte *destination, byte length);
+
 // Write functions:
-	void writeByte(byte registerAddress, byte writeValue);
-	void writeWord(byte registerAddress, unsigned int writeValue);
-	void writeBytes(byte firstRegisterAddress, byte * writeArray, byte length);
+    void writeByte(byte registerAddress, byte writeValue);
+
+    void writeWord(byte registerAddress, unsigned int writeValue);
+
+    void writeBytes(byte firstRegisterAddress, byte *writeArray, byte length);
+
 // Helper functions:
-	// calculateLEDTRegister - Try to estimate an LED on/off duration register, 
-	// given the number of milliseconds and LED clock frequency.
-	byte calculateLEDTRegister(int ms); 
-	// calculateSlopeRegister - Try to estimate an LED rise/fall duration 
-	// register, given the number of milliseconds and LED clock frequency.
-	byte calculateSlopeRegister(int ms, byte onIntensity, byte offIntensity);
+    // calculateLEDTRegister - Try to estimate an LED on/off duration register,
+    // given the number of milliseconds and LED clock frequency.
+    byte calculateLEDTRegister(int ms);
+
+    // calculateSlopeRegister - Try to estimate an LED rise/fall duration
+    // register, given the number of milliseconds and LED clock frequency.
+    byte calculateSlopeRegister(int ms, byte onIntensity, byte offIntensity);
 
 public:
 // -----------------------------------------------------------------------------
 // Constructor - SX1509: This function sets up the pins connected to the 
 //		SX1509, and sets up the private deviceAddress variable.
 // -----------------------------------------------------------------------------
-	SX1509();
-// Legacy below. Use 0-parameter constructor, and set these parameters in the 
+    SX1509();
+
+// Legacy below. Use 0-parameter constructor, and set these parameters in the
 // begin function:
-	SX1509(byte address, byte resetPin = 255, byte interruptPin = 255, byte oscillatorPin = 255); 
+    SX1509(byte address, byte resetPin = 255, byte interruptPin = 255, byte oscillatorPin = 255);
 
 // -----------------------------------------------------------------------------
 // begin(byte address, byte resetPin): This function initializes the SX1509.
@@ -93,9 +101,10 @@ public:
 //		 software reset the SX1509.
 // Output: Returns a 1 if communication is successful, 0 on error.
 // -----------------------------------------------------------------------------
-	byte begin(byte address = 0x3E, byte resetPin = 0xFF);
-	byte init(void); // Legacy -- use begin now
-	
+    byte begin(byte address = 0x3E, byte resetPin = 0xFF);
+
+    byte init(void); // Legacy -- use begin now
+
 // -----------------------------------------------------------------------------
 // reset(bool hardware): This function resets the SX1509 - either a hardware 
 //		reset or software. A hardware reset (hardware parameter = 1) pulls the 
@@ -106,7 +115,7 @@ public:
 //  Input:
 //	 	- hardware: 0 executes a software reset, 1 executes a hardware reset
 // -----------------------------------------------------------------------------
-	void reset(bool hardware);
+    void reset(bool hardware);
 
 // -----------------------------------------------------------------------------
 // pinMode(byte pin, byte inOut): This function sets one of the SX1509's 16 
@@ -117,9 +126,10 @@ public:
 //	 	- inOut: The Arduino INPUT and OUTPUT constants should be used for the 
 //		 inOut parameter. They do what they say!
 // -----------------------------------------------------------------------------
-	void pinMode(byte pin, byte inOut);
-	void pinDir(byte pin, byte inOut); // Legacy - use pinMode
-	
+    void pinMode(byte pin, byte inOut);
+
+    void pinDir(byte pin, byte inOut); // Legacy - use pinMode
+
 // -----------------------------------------------------------------------------
 // digitalWrite(byte pin, byte highLow): This function writes a pin to either high 
 //		or low if it's configured as an OUTPUT. If the pin is configured as an 
@@ -130,8 +140,9 @@ public:
 //		- pin: The SX1509 pin number. Should be a value between 0 and 15.
 //		- highLow: should be Arduino's defined HIGH or LOW constants.
 // -----------------------------------------------------------------------------
-	void digitalWrite(byte pin, byte highLow); 
-	void writePin(byte pin, byte highLow); // Legacy - use digitalWrite
+    void digitalWrite(byte pin, byte highLow);
+
+    void writePin(byte pin, byte highLow); // Legacy - use digitalWrite
 
 // -----------------------------------------------------------------------------
 // digitalRead(byte pin): This function reads the HIGH/LOW status of a pin.
@@ -142,9 +153,10 @@ public:
 //  Outputs:
 //		This function returns a 1 if HIGH, 0 if LOW
 // -----------------------------------------------------------------------------
-	byte digitalRead(byte pin);
-	byte readPin(byte pin); // Legacy - use digitalRead
-	
+    byte digitalRead(byte pin);
+
+    byte readPin(byte pin); // Legacy - use digitalRead
+
 // -----------------------------------------------------------------------------
 // ledDriverInit(byte pin, byte freq, bool log): This function initializes LED 
 //		driving on a pin. It must be called if you want to use the pwm or blink 
@@ -158,8 +170,8 @@ public:
 //			- currently log sets both bank A and B to the same mode
 //	Note: this function automatically decides to use the internal 2MHz osc.
 // -----------------------------------------------------------------------------
-	void ledDriverInit(byte pin, byte freq = 1, bool log = false);
-	
+    void ledDriverInit(byte pin, byte freq = 1, bool log = false);
+
 // -----------------------------------------------------------------------------
 // analogWrite(byte pin, byte iOn):	This function can be used to control the intensity 
 //		of an output pin connected to an LED.
@@ -171,9 +183,10 @@ public:
 //
 //	Note: ledDriverInit should be called on the pin before calling this.
 // -----------------------------------------------------------------------------
-	void analogWrite(byte pin, byte iOn);
-	void pwm(byte pin, byte iOn); // Legacy - use analogWrite
-	
+    void analogWrite(byte pin, byte iOn);
+
+    void pwm(byte pin, byte iOn); // Legacy - use analogWrite
+
 // -----------------------------------------------------------------------------
 // setupBlink(byte pin, byte tOn, byte tOff, byte offIntensity, byte tRise, byte 
 //		tFall):  blink performs both the blink and breath LED driver functions.
@@ -198,7 +211,8 @@ public:
 //			tFall are set on 0-3 or 8-11 those pins will still only blink.
 // 		- ledDriverInit should be called on the pin to be blinked before this.
 // -----------------------------------------------------------------------------
-	void setupBlink(byte pin, byte tOn, byte toff, byte onIntensity = 255, byte offIntensity = 0, byte tRise = 0, byte tFall = 0, bool log = false);
+    void setupBlink(byte pin, byte tOn, byte toff, byte onIntensity = 255, byte offIntensity = 0, byte tRise = 0,
+                    byte tFall = 0, bool log = false);
 
 // -----------------------------------------------------------------------------
 // blink(byte pin, unsigned long tOn, unsigned long tOff, byte onIntensity, byte offIntensity);
@@ -215,8 +229,8 @@ public:
 //			tFall are set on 0-3 or 8-11 those pins will still only blink.
 // 		- ledDriverInit should be called on the pin to be blinked before this.
 // -----------------------------------------------------------------------------
-	void blink(byte pin, unsigned long tOn, unsigned long tOff, byte onIntensity = 255, byte offIntensity = 0);
-	
+    void blink(byte pin, unsigned long tOn, unsigned long tOff, byte onIntensity = 255, byte offIntensity = 0);
+
 // -----------------------------------------------------------------------------
 // breathe(byte pin, unsigned long tOn, unsigned long tOff, unsigned long rise, unsigned long fall, byte onInt, byte offInt, bool log);
 //  	Set a pin to breathe output for estimated on/off millisecond durations, with
@@ -236,7 +250,9 @@ public:
 // 		- ledDriverInit should be called on the pin to be blinked before this,
 //  	  Or call pinMode(<pin>, ANALOG_OUTPUT);
 // -----------------------------------------------------------------------------
-	void breathe(byte pin, unsigned long tOn, unsigned long tOff, unsigned long rise, unsigned long fall, byte onInt = 255, byte offInt = 0, bool log = LINEAR);
+    void
+    breathe(byte pin, unsigned long tOn, unsigned long tOff, unsigned long rise, unsigned long fall, byte onInt = 255,
+            byte offInt = 0, bool log = LINEAR);
 
 // -----------------------------------------------------------------------------
 // keypad(byte rows, byte columns, byte sleepTime, byte scanTime, byte debounceTime)
@@ -260,7 +276,7 @@ public:
 //  	  Should be a millisecond duration between 0 and 64.
 //   	  Possible values are 0 (0.5), 1, 2, 4, 8, 16, 32, 64.
 // -----------------------------------------------------------------------------
-	void keypad(byte rows, byte columns, unsigned int sleepTime = 0, byte scanTime = 1, byte debounceTime = 0);
+    void keypad(byte rows, byte columns, unsigned int sleepTime = 0, byte scanTime = 1, byte debounceTime = 0);
 
 // -----------------------------------------------------------------------------
 // readKeypad(): This function returns a 16-bit value containing the status of
@@ -272,9 +288,10 @@ public:
 //		button in that row or column is being pressed. As such, at least two
 //		bits should be set.
 // -----------------------------------------------------------------------------
-	unsigned int readKeypad();
-	unsigned int readKeyData(); // Legacy: use readKeypad();
-	
+    unsigned int readKeypad();
+
+    unsigned int readKeyData(); // Legacy: use readKeypad();
+
 // -----------------------------------------------------------------------------
 // getRow(): This function returns the first active row from the return value of
 //  	readKeypad().
@@ -287,8 +304,8 @@ public:
 //		button in that row or column is being pressed. As such, at least two
 //		bits should be set.
 // -----------------------------------------------------------------------------
-	byte getRow(unsigned int keyData);
-	
+    byte getRow(unsigned int keyData);
+
 // -----------------------------------------------------------------------------
 // getCol(): This function returns the first active column from the return value of
 //  	readKeypad().
@@ -301,8 +318,8 @@ public:
 //		button in that row or column is being pressed. As such, at least two
 //		bits should be set.
 // -----------------------------------------------------------------------------
-	byte getCol(unsigned int keyData);
-	
+    byte getCol(unsigned int keyData);
+
 // -----------------------------------------------------------------------------
 // sync(void): this function resets the PWM/Blink/Fade counters, syncing any 
 //		blinking LEDs. Bit 2 of REG_MISC is set, which alters the functionality 
@@ -310,8 +327,8 @@ public:
 //		reset all LED counters. Bit 2 of REG_MISC is again cleared, returning 
 //		nReset pin to POR functionality
 // -----------------------------------------------------------------------------
-	void sync(void);
-	
+    void sync(void);
+
 // -----------------------------------------------------------------------------
 // debounceConfig(byte configValue): This method configures the debounce time of 
 //		every input.
@@ -329,8 +346,8 @@ public:
 //
 //	Note: fOSC is set with the configClock function. It defaults to 2MHz.
 // -----------------------------------------------------------------------------
-	void debounceConfig(byte configVaule);
-	
+    void debounceConfig(byte configVaule);
+
 // -----------------------------------------------------------------------------
 // debounceTime(byte configValue): This method configures the debounce time of 
 //		every input to an estimated millisecond time duration.
@@ -342,7 +359,7 @@ public:
 //
 //	Note: fOSC is set with the configClock function. It defaults to 2MHz.
 // -----------------------------------------------------------------------------
-	void debounceTime(byte time);
+    void debounceTime(byte time);
 
 // -----------------------------------------------------------------------------
 // debouncePin(byte pin): This method enables debounce on SX1509 input pin.
@@ -350,8 +367,9 @@ public:
 //	Input:
 //		- pin: The SX1509 pin to be debounced. Should be between 0 and 15.
 // -----------------------------------------------------------------------------
-	void debouncePin(byte pin);
-	void debounceEnable(byte pin); // Legacy, use debouncePin
+    void debouncePin(byte pin);
+
+    void debounceEnable(byte pin); // Legacy, use debouncePin
 
 // -----------------------------------------------------------------------------
 // debounceKeypad(byte pin): This method enables debounce on all pins connected
@@ -362,7 +380,7 @@ public:
 //		- numRows: The number of rows in the keypad matrix.
 //		- numCols: The number of columns in the keypad matrix.
 // -----------------------------------------------------------------------------	
-	void debounceKeypad(byte time, byte numRows, byte numCols);
+    void debounceKeypad(byte time, byte numRows, byte numCols);
 
 // -----------------------------------------------------------------------------	
 // enableInterrupt(byte pin, byte riseFall): This function sets up an interrupt 
@@ -381,8 +399,8 @@ public:
 //	Note: This function does not set up a pin as an input, or configure	its 
 //		pull-up/down resistors! Do that before (or after).
 // -----------------------------------------------------------------------------
-	void enableInterrupt(byte pin, byte riseFall);
-	
+    void enableInterrupt(byte pin, byte riseFall);
+
 // -----------------------------------------------------------------------------
 // interruptSource(void): Returns an unsigned int representing which pin caused 
 //		an interrupt.
@@ -394,7 +412,7 @@ public:
 //  	- clear: boolean commanding whether the interrupt should be cleared
 //  	  after reading or not.
 // -----------------------------------------------------------------------------
-	unsigned int interruptSource(bool clear = true);
+    unsigned int interruptSource(bool clear = true);
 
 // -----------------------------------------------------------------------------
 // checkInterrupt(void): Checks if a single pin generated an interrupt.
@@ -403,7 +421,7 @@ public:
 //  Input:
 //  	- pin: Pin to be checked for generating an input.
 // -----------------------------------------------------------------------------	
-	bool checkInterrupt(int pin);
+    bool checkInterrupt(int pin);
 
 // -----------------------------------------------------------------------------
 // configClock(byte oscSource, byte oscPinFunction, byte oscFreqOut, byte oscDivider)
@@ -428,8 +446,9 @@ public:
 //			fOSCOut = FOSC / (2^(RegClock[3:0]-1))
 //		- This value defaults to 0.
 // -----------------------------------------------------------------------------
-	void configClock(byte oscSource = 2, byte oscPinFunction = 0, byte oscFreqOut = 0, byte oscDivider = 1); // Legacy, use clock();
-	
+    void configClock(byte oscSource = 2, byte oscPinFunction = 0, byte oscFreqOut = 0,
+                     byte oscDivider = 1); // Legacy, use clock();
+
 // -----------------------------------------------------------------------------
 // clock(byte oscSource, byte oscDivider, byte oscPinFunction, byte oscFreqOut)
 //		This function configures the oscillator source/speed
@@ -437,10 +456,10 @@ public:
 //  	This is just configClock in a bit more sane order.
 //
 // -----------------------------------------------------------------------------
-	void clock(byte oscSource = 2, byte oscDivider = 1, byte oscPinFunction = 0, byte oscFreqOut = 0);
+    void clock(byte oscSource = 2, byte oscDivider = 1, byte oscPinFunction = 0, byte oscFreqOut = 0);
 };
 
 // Add backwards compatibility for the old class name: sx1509Class
 typedef SX1509 sx1509Class;
 
-#endif	// SX1509_library_H
+#endif    // SX1509_library_H
