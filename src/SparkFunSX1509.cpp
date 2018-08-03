@@ -187,6 +187,10 @@ void SX1509::ledDriverInit(byte pin, byte freq /*= 1*/, bool log /*= false*/) {
     tempWord |= (1 << pin);
     writeWord(REG_INPUT_DISABLE_B, tempWord);
 
+    tempWord = readWord(REG_OPEN_DRAIN_B);
+    tempWord |= (1 << pin);
+    writeWord(REG_OPEN_DRAIN_B, tempWord);
+
     // Disable pull-up
     // Writing a 0 to the pin bit will disable that pull-up resistor
     tempWord = readWord(REG_PULL_UP_B);
