@@ -49,7 +49,7 @@ byte SX1509::begin(byte address, byte resetPin) {
 
 byte SX1509::init(void) {
     // Begin I2C
-    Wire.begin(34, 35, 400000);
+    Wire.begin(21, 4);
 
     // If the reset pin is connected
     if (pinReset != 255)
